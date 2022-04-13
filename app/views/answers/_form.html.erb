@@ -1,0 +1,7 @@
+<p><%= render 'shared/errors', resource: @answer %></p>
+
+<%= form_with model: [question, answer], local: true do |form| %>
+  <%= form.label :new_answer %>
+  <%= form.text_area :body, id: :body %>
+  <%= form.submit t('.submit') %>
+<% end %>

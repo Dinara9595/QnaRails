@@ -1,0 +1,12 @@
+<h2>All questions</h2>
+<table class="table">
+  <tr>
+    <th>Title</th>
+    <th>Body</th>
+    <th>Actions</th>
+  </tr>
+
+  <%= render @questions %>
+</table>
+
+<p><%= link_to 'Ask question', new_question_path %></p>

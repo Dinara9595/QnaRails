@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
   let(:answer) { create(:answer) }
+  let(:user) { create(:user) }
 
   describe 'GET #index' do
     let(:question) { create(:question, :with_answers, count: 3) }
@@ -29,6 +30,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'GET #new' do
+    before { login(user) }
     before { get :new, params: { question_id: answer.question_id} }
 
     it 'assigns a new Answer to @answer' do
@@ -41,6 +43,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'GET #edit' do
+    before { login(user) }
     before { get :edit, params: { question_id: answer.question_id, id: answer.id} }
 
     it 'assigns the requested answer to @answer' do
@@ -53,15 +56,16 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'POST #create' do
+    before { login(user) }
     let(:question) { create(:question) }
 
     context 'with valid attributes' do
       it 'saves a new answer in the database' do
         expect { post :create, params: { question_id: question.id, answer: attributes_for(:answer) } }.to change(question.answers, :count).by(1)
       end
-      it 'redirects to show view' do
+      it 'redirects to question view with answers' do
         post :create, params: { question_id: question.id, answer: attributes_for(:answer) }
-        expect(response).to redirect_to "/answers/#{assigns(:answer).id}"
+        expect(response).to redirect_to "/questions/#{assigns(:question).id}"
       end
     end
 
@@ -69,14 +73,15 @@ RSpec.describe AnswersController, type: :controller do
       it 'does not to save the answer' do
         expect { post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid) } }.to_not change(Answer, :count)
       end
-      it 're-renders new view' do
+      it 'render to questions/show view' do
         post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid) }
-        expect(response).to render_template :new
+        expect(response).to render_template :'questions/show'
       end
     end
   end
 
   describe 'POST #update' do
+    before { login(user) }
 
     context 'with valid attributes' do
       it 'assigns the requested answer to @answer' do
@@ -113,15 +118,17 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
+    before { login(user) }
+
     let!(:answer) { create(:answer) }
 
     it 'deletes the answer' do
       expect { delete :destroy, params: { question_id: answer.question_id, id: answer.id } }.to change(Answer, :count).by(-1)
     end
 
-    it 'redirects to index' do
+    it 'redirects to page question with answers' do
       delete :destroy, params: { question_id: answer.question_id, id: answer.id }
-      expect(response).to redirect_to question_answers_path(answer.question)
+      expect(response).to redirect_to question_path(answer.question)
     end
   end
 end

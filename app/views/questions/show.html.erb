@@ -1,0 +1,12 @@
+<h1><%= @question.title %></h1>
+<p><%= @question.body %></p>
+
+<h2>Answers</h2>
+
+<al>
+  <%= render @question.answers %>
+</al><br>
+
+<%= render 'answers/form', question: @question, answer: @answer %><br>
+
+<%= link_to 'Back', questions_path %>
