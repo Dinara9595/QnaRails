@@ -1,28 +1,28 @@
 require 'rails_helper'
 
-feature 'User can create answer', %q{
-  As an authenticated user
-} do
+feature 'User can create answer' do
 
   given(:user) { create(:user) }
   given(:question) { create(:question) }
 
-  scenario 'Authenticated user create answer' do
-    sign_in(user)
-    visit question_path(question)
+  describe 'Authenticated user' do
+    background do
+      sign_in(user)
+      visit question_path(question)
+    end
 
-    fill_in 'body', with: 'Test answer'
-    click_on 'Save answer'
+    scenario 'create answer' do
+      fill_in 'body', with: 'Test answer'
+      click_on 'Save answer'
 
-    expect(page).to have_content 'Test answer'
-  end
+      expect(page).to have_content 'Test answer'
+    end
 
-  scenario 'Authenticated user create an answer with errors' do
-    sign_in(user)
-    visit question_path(question)
-    click_on 'Save answer'
+    scenario 'create an answer with errors' do
+      click_on 'Save answer'
 
-    expect(page).to have_content "Body can't be blank"
+      expect(page).to have_content "Body can't be blank"
+    end
   end
 
   scenario 'Unauthenticated user tries to ask a question' do
