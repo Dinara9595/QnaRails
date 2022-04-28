@@ -11,6 +11,20 @@
   </head>
 
   <body>
+
+  <% if user_signed_in? %>
+    <p class="nav_user ">
+      Welcome, <b><%= current_user.email %></b>!<br>
+      <%= link_to 'Выйти', destroy_user_session_path, method: :delete %><br>
+    </p>
+  <% end %>
+
+  <% unless user_signed_in? %>
+    <p class="nav_user ">
+      <%= link_to 'Вoйти', new_user_session_path %><br>
+    </p>
+  <% end %>
+
     <p class="notice"><%= notice %></p>
     <p class="alert"><%= alert %></p>
     <%= yield %>
