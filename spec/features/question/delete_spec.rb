@@ -11,7 +11,7 @@ feature 'User can delete question' do
       ask_question
     end
 
-    scenario 'delete his question' do
+    scenario 'delete their question' do
       click_on 'Delete'
 
       expect(page).not_to have_content 'Test question'

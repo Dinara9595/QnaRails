@@ -13,7 +13,7 @@ feature 'User can delete answer' do
       click_on 'Save answer'
     end
 
-    scenario 'delete his answer' do
+    scenario 'delete their answer' do
       page.find('table', text: 'Test answer').click_link('Delete')
 
       expect(page).not_to have_content 'Test answer'
