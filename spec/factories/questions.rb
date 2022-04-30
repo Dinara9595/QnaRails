@@ -11,5 +11,7 @@ FactoryBot.define do
       transient { count { 2 } }
       after(:build) { |question, evaluator| create_list(:answer, evaluator.count, question: question) }
     end
+
+    association :user
   end
 end

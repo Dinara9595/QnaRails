@@ -1,8 +1,9 @@
-<li>
-  <%= answer.body %>
-  <%= link_to 'Просмотр', answer_path(answer) %> |
-  <%= link_to 'Редактировать', edit_answer_path(answer) %> |
-  <%= link_to 'Удалить', answer_path(answer),
+<tr>
+  <td><%= answer.body %></td>
+  <td><%= answer.question.user.email %></td>
+  <td><%= link_to 'Show', answer_path(answer) %> |</td>
+  <td><%= link_to 'Edit', edit_answer_path(answer) %> |</td>
+  <td><%= link_to 'Delete', answer_path(answer),
               method: :delete,
-              data: { confirm: "Вы уверены?"} %>
-</li>
+              data: { confirm: "Вы уверены?"} %></td>
+</tr>

@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
   let(:answer) { create(:answer) }
-  let(:user) { create(:user) }
 
   describe 'GET #index' do
     let(:question) { create(:question, :with_answers, count: 3) }
@@ -30,7 +29,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'GET #new' do
-    before { login(user) }
+    before { login(answer.question.user) }
     before { get :new, params: { question_id: answer.question_id} }
 
     it 'assigns a new Answer to @answer' do
@@ -43,7 +42,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'GET #edit' do
-    before { login(user) }
+    before { login(answer.question.user) }
     before { get :edit, params: { question_id: answer.question_id, id: answer.id} }
 
     it 'assigns the requested answer to @answer' do
@@ -56,7 +55,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'POST #create' do
-    before { login(user) }
+    before { login(answer.question.user) }
     let(:question) { create(:question) }
 
     context 'with valid attributes' do
@@ -81,7 +80,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'POST #update' do
-    before { login(user) }
+    before { login(answer.question.user) }
 
     context 'with valid attributes' do
       it 'assigns the requested answer to @answer' do
@@ -118,9 +117,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    before { login(user) }
-
-    let!(:answer) { create(:answer) }
+    before { login(answer.question.user) }
 
     it 'deletes the answer' do
       expect { delete :destroy, params: { question_id: answer.question_id, id: answer.id } }.to change(Answer, :count).by(-1)
