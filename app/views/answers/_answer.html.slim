@@ -1,0 +1,11 @@
+tr
+  td
+    = answer.body
+  td
+    = answer.question.user.email
+  td
+    = link_to 'Show', answer_path(answer)
+  td
+    = link_to 'Edit', edit_answer_path(answer)
+  td
+    = link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: "Вы уверены?"} if current_user == answer.question.user

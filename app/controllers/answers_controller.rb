@@ -21,7 +21,7 @@ class AnswersController < ApplicationController
     if @answer.save
       redirect_to question_path(@question)
     else
-      render :'questions/show'
+      render 'questions/show'
     end
   end
 
@@ -34,14 +34,8 @@ class AnswersController < ApplicationController
   end
 
   def destroy
-    load_answer_destroy(@answer)
-
-    if @deleted_answer
-      @deleted_answer.destroy
-      redirect_to question_path(@answer.question)
-    else
-      redirect_to questions_path(@answer.question), notice: 'Вы не можете удалить чужой ответ!'
-    end
+    @answer.destroy if current_user.author_of?(@answer.question)
+    redirect_to question_path(@answer.question)
   end
 
   private
@@ -52,11 +46,6 @@ class AnswersController < ApplicationController
 
   def load_answer
     @answer = Answer.find(params[:id])
-  end
-
-  def load_answer_destroy(answer)
-    current_user_question = current_user.questions.find_by(id: @answer.question.id)
-    @deleted_answer = current_user_question.answers.find_by(id: answer.id) if current_user_question
   end
 
   def answer_params

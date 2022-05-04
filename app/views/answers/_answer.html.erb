@@ -1,9 +1,0 @@
-<tr>
-  <td><%= answer.body %></td>
-  <td><%= answer.question.user.email %></td>
-  <td><%= link_to 'Show', answer_path(answer) %> |</td>
-  <td><%= link_to 'Edit', edit_answer_path(answer) %> |</td>
-  <td><%= link_to 'Delete', answer_path(answer),
-              method: :delete,
-              data: { confirm: "Вы уверены?"} %></td>
-</tr>

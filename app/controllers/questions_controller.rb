@@ -35,13 +35,8 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
-    load_question_destroy(@question)
-    if @deleted_question
-      @deleted_question.destroy
-      redirect_to questions_path
-    else
-      redirect_to questions_path, notice: 'Вы не можете удалить чужой вопрос!'
-    end
+    @question.destroy if current_user.author_of?(@question)
+    redirect_to questions_path
   end
 
   private

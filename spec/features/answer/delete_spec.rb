@@ -2,34 +2,24 @@ require 'rails_helper'
 
 feature 'User can delete answer' do
 
-  given(:user) { create_list(:user, 2) }
+  given(:user) { create(:user) }
+  given!(:answer) { create(:answer) }
 
-  describe 'User can delete' do
-    background do
-      sign_in(user.first)
-      visit questions_path
-      ask_question
-      fill_in 'body', with: 'Test answer'
-      click_on 'Save answer'
-    end
+  scenario 'User can delete their answer' do
+    sign_in(answer.question.user)
+    visit questions_path
+    page.find('table', text: 'Question body test').click_link('Show')
+    page.find('table', text: 'Answer body test').click_link('Delete')
 
-    scenario 'delete their answer' do
-      page.find('table', text: 'Test answer').click_link('Delete')
+    expect(page).to have_no_content 'MyText'
+  end
 
-      expect(page).not_to have_content 'Test answer'
-    end
+  scenario "User can not delete someone else's answer" do
+    sign_in(user)
+    visit questions_path
+    page.find('table', text: 'Question body test').click_link('Show')
 
-    scenario "delete someone else's answer" do
-      click_on 'Выйти'
-      visit new_user_session_path
-      sign_in(user.last)
-      page.find('table', text: 'Test question').click_link('Show')
-
-      page.find('table', text: 'Test answer').click_link('Delete')
-
-      expect(page).to have_content "#{user.first.email}"
-      expect(page).to have_content 'Вы не можете удалить чужой ответ!'
-    end
+    expect(page.find('table', text: 'Answer body test')).to have_no_button 'Delete'
   end
 end
 
