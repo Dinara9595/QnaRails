@@ -6,7 +6,7 @@ feature 'User can delete answer' do
   given!(:answer) { create(:answer) }
 
   scenario 'User can delete their answer' do
-    sign_in(answer.question.user)
+    sign_in(answer.user)
     visit questions_path
     page.find('table', text: 'Question body test').click_link('Show')
     page.find('table', text: 'Answer body test').click_link('Delete')

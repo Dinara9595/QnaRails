@@ -29,7 +29,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'GET #new' do
-    before { login(answer.question.user) }
+    before { login(answer.user) }
     before { get :new, params: { question_id: answer.question_id} }
 
     it 'assigns a new Answer to @answer' do
@@ -42,7 +42,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'GET #edit' do
-    before { login(answer.question.user) }
+    before { login(answer.user) }
     before { get :edit, params: { question_id: answer.question_id, id: answer.id} }
 
     it 'assigns the requested answer to @answer' do
@@ -55,7 +55,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'POST #create' do
-    before { login(answer.question.user) }
+    before { login(answer.user) }
     let(:question) { create(:question) }
 
     context 'with valid attributes' do
@@ -80,7 +80,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'POST #update' do
-    before { login(answer.question.user) }
+    before { login(answer.user) }
 
     context 'with valid attributes' do
       it 'assigns the requested answer to @answer' do
@@ -116,12 +116,27 @@ RSpec.describe AnswersController, type: :controller do
     end
   end
 
-  describe 'DELETE #destroy' do
+  describe "DELETE #destroy answer's author" do
     let!(:answer) { create(:answer) }
-    before { login(answer.question.user) }
+    before { login(answer.user) }
 
     it 'deletes the answer' do
       expect { delete :destroy, params: { question_id: answer.question_id, id: answer.id } }.to change(Answer, :count).by(-1)
+    end
+
+    it 'redirects to page question with answers' do
+      delete :destroy, params: { question_id: answer.question_id, id: answer.id }
+      expect(response).to redirect_to question_path(answer.question)
+    end
+  end
+
+  describe "DELETE #destroy not answer's author" do
+    let!(:answer) { create(:answer) }
+    let(:user) { create(:user) }
+    before { login(user) }
+
+    it 'not deletes the question' do
+      expect { delete :destroy, params: { question_id: answer.question_id, id: answer.id } }.to_not change(Answer, :count)
     end
 
     it 'redirects to page question with answers' do

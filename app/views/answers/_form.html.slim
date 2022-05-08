@@ -4,3 +4,8 @@ p
   = form.label :answer
   = form.text_area :body, id: :body
   = form.submit t('.submit')
+
+p
+  | Author:
+  = current_user.email if user_signed_in?
+  br

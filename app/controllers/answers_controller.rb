@@ -16,7 +16,7 @@ class AnswersController < ApplicationController
   def edit; end
 
   def create
-    @answer = Answer.new(answer_params.merge(question: @question))
+    @answer = current_user.answers.build(answer_params.merge(question: @question))
 
     if @answer.save
       redirect_to question_path(@question)
@@ -34,7 +34,7 @@ class AnswersController < ApplicationController
   end
 
   def destroy
-    @answer.destroy if current_user.author_of?(@answer.question)
+    @answer.destroy if current_user.author_of?(@answer)
     redirect_to question_path(@answer.question)
   end
 
@@ -49,6 +49,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body)
+    params.require(:answer).permit(:body, :user_id)
   end
 end

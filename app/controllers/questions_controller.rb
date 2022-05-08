@@ -48,8 +48,4 @@ class QuestionsController < ApplicationController
   def load_question
     @question = Question.find(params[:id])
   end
-
-  def load_question_destroy(question)
-    @deleted_question = current_user.questions.find_by(id: question.id)
-  end
 end
