@@ -8,5 +8,5 @@ tr
   td
     = link_to 'Edit', edit_answer_path(answer)
   td
-    - if user_signed_in? && current_user.author_of?(answer)
+    - if current_user&.author_of?(answer)
       = link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: "Вы уверены?"}

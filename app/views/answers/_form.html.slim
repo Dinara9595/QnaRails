@@ -7,5 +7,5 @@ p
 
 p
   | Author:
-  = current_user.email if user_signed_in?
+  = current_user&.email
   br
