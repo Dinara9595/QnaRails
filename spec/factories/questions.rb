@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :question do
-    title { "MyString" }
-    body { "MyText" }
+    title { "Question title test" }
+    body { "Question body test" }
 
     trait :invalid do
       title { nil }
@@ -11,5 +11,7 @@ FactoryBot.define do
       transient { count { 2 } }
       after(:build) { |question, evaluator| create_list(:answer, evaluator.count, question: question) }
     end
+
+    association :user
   end
 end

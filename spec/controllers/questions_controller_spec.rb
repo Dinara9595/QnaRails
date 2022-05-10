@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe QuestionsController, type: :controller do
   let(:question) { create(:question) }
+
   describe 'GET #index' do
     let(:questions) { create_list(:question, 3) }
 
@@ -29,6 +30,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #new' do
+    before { login(question.user) }
     before { get :new }
 
     it 'assigns a new Question to @question' do
@@ -41,6 +43,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #edit' do
+    before { login(question.user) }
     before { get :edit, params: { id: question } }
 
     it 'assigns the requested question to @question' do
@@ -53,6 +56,8 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'POST #create' do
+    before { login(question.user) }
+
     context 'with valid attributes' do
       it 'saves a new question in the databased' do
         expect { post :create, params: { question: attributes_for(:question) } }.to change(Question, :count).by(1)
@@ -77,6 +82,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'POST #update' do
+    before { login(question.user) }
     context 'with valid attributes' do
       it 'assigns the requested question to @question' do
         patch :update, params: { id: question, question: attributes_for(:question) }
@@ -103,8 +109,8 @@ RSpec.describe QuestionsController, type: :controller do
       it 'does not change question' do
         question.reload
 
-        expect(question.title).to eq "MyString"
-        expect(question.body).to eq "MyText"
+        expect(question.title).to eq "Question title test"
+        expect(question.body).to eq "Question body test"
       end
 
       it 're-renders edit view' do
@@ -116,13 +122,31 @@ RSpec.describe QuestionsController, type: :controller do
   describe 'DELETE #destroy' do
     let!(:question) { create(:question) }
 
-    it 'deletes the question' do
-      expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
+    context "question's author" do
+      before { login(question.user) }
+
+      it 'deletes the question' do
+        expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
+      end
+
+      it 'redirects to index' do
+        delete :destroy, params: { id: question }
+        expect(response).to redirect_to questions_path
+      end
     end
 
-    it 'redirects to index' do
-      delete :destroy, params: { id: question }
-      expect(response).to redirect_to questions_path
+    context "not question's author" do
+      let(:user) { create(:user) }
+      before { login(user) }
+
+      it 'not deletes the question' do
+        expect { delete :destroy, params: { id: question } }.to_not change(Question, :count)
+      end
+
+      it 'redirects to index' do
+        delete :destroy, params: { id: question }
+        expect(response).to redirect_to questions_path
+      end
     end
   end
 end

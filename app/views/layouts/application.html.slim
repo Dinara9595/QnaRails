@@ -1,0 +1,29 @@
+doctype html
+html
+  head
+    title
+      | QnaRails
+    meta[name="viewport" content="width=device-width,initial-scale=1"]
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_pack_tag 'application', 'data-turbolinks-track': 'reload'
+  body
+    - if user_signed_in?
+      p.nav_user
+        |  Welcome, 
+        b
+          = current_user.email
+        | !
+        br
+        = link_to 'Выйти', destroy_user_session_path, method: :delete
+        br
+    - else
+      p.nav_user
+        = link_to 'Вoйти', new_user_session_path
+        br
+    p.notice
+      = notice
+    p.alert
+      = alert
+    = yield

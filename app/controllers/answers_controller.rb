@@ -1,4 +1,5 @@
 class AnswersController < ApplicationController
+  before_action :authenticate_user!, except: %i[index show]
   before_action :load_answer, only: %i[show edit update destroy]
   before_action :load_question, only: %i[index create]
 
@@ -15,12 +16,12 @@ class AnswersController < ApplicationController
   def edit; end
 
   def create
-    @answer = @question.answers.build(answer_params)
+    @answer = current_user.answers.build(answer_params.merge(question: @question))
 
     if @answer.save
-      redirect_to answer_path(id: @answer)
+      redirect_to question_path(@question)
     else
-      render :new
+      render 'questions/show'
     end
   end
 
@@ -33,8 +34,8 @@ class AnswersController < ApplicationController
   end
 
   def destroy
-    @answer.destroy
-    redirect_to question_answers_path(@answer.question)
+    @answer.destroy if current_user.author_of?(@answer)
+    redirect_to question_path(@answer.question)
   end
 
   private
@@ -48,6 +49,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body)
+    params.require(:answer).permit(:body, :user_id)
   end
 end
