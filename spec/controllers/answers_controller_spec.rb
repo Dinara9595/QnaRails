@@ -17,7 +17,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'GET #show' do
-    before { get :show, params: { question_id: answer.question_id, id: answer.id} }
+    before { get :show, params: { id: answer.id} }
 
     it 'assigns the requested answer to @answer' do
       expect(assigns(:answer)).to eq answer
@@ -43,7 +43,7 @@ RSpec.describe AnswersController, type: :controller do
 
   describe 'GET #edit' do
     before { login(answer.user) }
-    before { get :edit, params: { question_id: answer.question_id, id: answer.id} }
+    before { get :edit, params: { id: answer.id} }
 
     it 'assigns the requested answer to @answer' do
       expect(assigns(:answer)).to eq answer
@@ -84,25 +84,25 @@ RSpec.describe AnswersController, type: :controller do
 
     context 'with valid attributes' do
       it 'assigns the requested answer to @answer' do
-        patch :update, params: { question_id: answer.question_id, id: answer, answer: attributes_for(:answer) }
+        patch :update, params: { id: answer, answer: attributes_for(:answer) }
         expect(assigns(:answer)).to eq answer
       end
 
       it 'changes answer attributes' do
-        patch :update, params: { question_id: answer.question_id, id: answer, answer: { body: 'new body' } }
+        patch :update, params: { id: answer, answer: { body: 'new body' } }
         answer.reload
 
         expect(answer.body).to eq 'new body'
       end
 
       it 'redirects to updates answer' do
-        patch :update, params: { question_id: answer.question_id, id: answer, answer: attributes_for(:answer) }
+        patch :update, params: { id: answer, answer: attributes_for(:answer) }
         expect(response).to redirect_to answer
       end
     end
 
     context 'with invalid attributes' do
-      before { patch :update, params: { question_id: answer.question_id, id: answer, answer: attributes_for(:answer, :invalid ) } }
+      before { patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid ) } }
 
       it 'does not change question' do
         answer.reload
@@ -123,11 +123,11 @@ RSpec.describe AnswersController, type: :controller do
       before { login(answer.user) }
 
       it 'deletes the answer' do
-        expect { delete :destroy, params: { question_id: answer.question_id, id: answer.id } }.to change(Answer, :count).by(-1)
+        expect { delete :destroy, params: { id: answer.id } }.to change(Answer, :count).by(-1)
       end
 
       it 'redirects to page question with answers' do
-        delete :destroy, params: { question_id: answer.question_id, id: answer.id }
+        delete :destroy, params: { id: answer.id }
         expect(response).to redirect_to question_path(answer.question)
       end
     end
@@ -137,11 +137,11 @@ RSpec.describe AnswersController, type: :controller do
       before { login(user) }
 
       it 'not deletes the question' do
-        expect { delete :destroy, params: { question_id: answer.question_id, id: answer.id } }.to_not change(Answer, :count)
+        expect { delete :destroy, params: { id: answer.id } }.to_not change(Answer, :count)
       end
 
       it 'redirects to page question with answers' do
-        delete :destroy, params: { question_id: answer.question_id, id: answer.id }
+        delete :destroy, params: { id: answer.id }
         expect(response).to redirect_to question_path(answer.question)
       end
     end
