@@ -116,32 +116,34 @@ RSpec.describe AnswersController, type: :controller do
     end
   end
 
-  describe "DELETE #destroy answer's author" do
+  describe "DELETE #destroy" do
     let!(:answer) { create(:answer) }
-    before { login(answer.user) }
 
-    it 'deletes the answer' do
-      expect { delete :destroy, params: { question_id: answer.question_id, id: answer.id } }.to change(Answer, :count).by(-1)
+    context "answer's author" do
+      before { login(answer.user) }
+
+      it 'deletes the answer' do
+        expect { delete :destroy, params: { question_id: answer.question_id, id: answer.id } }.to change(Answer, :count).by(-1)
+      end
+
+      it 'redirects to page question with answers' do
+        delete :destroy, params: { question_id: answer.question_id, id: answer.id }
+        expect(response).to redirect_to question_path(answer.question)
+      end
     end
 
-    it 'redirects to page question with answers' do
-      delete :destroy, params: { question_id: answer.question_id, id: answer.id }
-      expect(response).to redirect_to question_path(answer.question)
-    end
-  end
+    context "not answer's author" do
+      let(:user) { create(:user) }
+      before { login(user) }
 
-  describe "DELETE #destroy not answer's author" do
-    let!(:answer) { create(:answer) }
-    let(:user) { create(:user) }
-    before { login(user) }
+      it 'not deletes the question' do
+        expect { delete :destroy, params: { question_id: answer.question_id, id: answer.id } }.to_not change(Answer, :count)
+      end
 
-    it 'not deletes the question' do
-      expect { delete :destroy, params: { question_id: answer.question_id, id: answer.id } }.to_not change(Answer, :count)
-    end
-
-    it 'redirects to page question with answers' do
-      delete :destroy, params: { question_id: answer.question_id, id: answer.id }
-      expect(response).to redirect_to question_path(answer.question)
+      it 'redirects to page question with answers' do
+        delete :destroy, params: { question_id: answer.question_id, id: answer.id }
+        expect(response).to redirect_to question_path(answer.question)
+      end
     end
   end
 end
