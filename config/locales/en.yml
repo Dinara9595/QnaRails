@@ -30,6 +30,10 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  questions:
+    show:
+      submit: "Save answer"
+
   answers:
     form:
       submit: "Save answer"

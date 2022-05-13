@@ -16,13 +16,7 @@ class AnswersController < ApplicationController
   def edit; end
 
   def create
-    @answer = current_user.answers.build(answer_params.merge(question: @question))
-
-    if @answer.save
-      redirect_to question_path(@question)
-    else
-      render 'questions/show'
-    end
+    @answer = current_user.answers.create(answer_params.merge(question: @question))
   end
 
   def update

@@ -1,19 +1,24 @@
-h1
-  = @question.title
-p
-  = @question.body
+h1= @question.title
+p= @question.body
+
 h2
   | Answers
-table.table
-  tr
-    th
-      | Body
-    th
-      | Author
-    th
-      | Actions
-  = render @question.answers
+
+.answers
+  table.table
+    tr
+      th
+        | Body
+      th
+        | Author
+      th
+        | Actions
+    = render @question.answers
+
+.answer-errors
+  = render 'shared/errors', resource: @answer
 = render 'answers/form', question: @question, answer: @answer
-br
+
 td
   = link_to 'Back', questions_path
+
