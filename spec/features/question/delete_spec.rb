@@ -9,7 +9,7 @@ feature 'User can delete question' do
     sign_in(question.user)
     visit questions_path
 
-    page.find('tr', text: 'QuestionBodyTest').click_link('Delete')
+    page.find('.questions', text: 'QuestionBodyTest').click_link('Delete')
 
     expect(page).to have_no_content 'QuestionTitleTest'
     expect(page).to have_no_content 'QuestionBodyTest'
@@ -19,7 +19,7 @@ feature 'User can delete question' do
     sign_in(user)
     visit questions_path
 
-    expect(page.find('table', text: 'QuestionTitleTest')).to have_no_button 'Delete'
+    expect(page.find('.questions', text: 'QuestionTitleTest')).to have_no_link 'Delete'
   end
 end
 

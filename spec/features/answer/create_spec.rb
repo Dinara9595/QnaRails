@@ -5,15 +5,15 @@ feature 'User can create answer' do
   given(:user) { create(:user) }
   given(:question) { create(:question) }
 
-  describe 'Authenticated user' do
+  describe 'Authenticated user', js: true do
     background do
       sign_in(user)
       visit question_path(question)
     end
 
-    scenario 'create answer', js: true do
-      fill_in 'body', with: 'TestAnswer'
-      click_on 'Save answer'
+    scenario 'create answer' do
+      fill_in 'Your answer', with: 'TestAnswer'
+      click_on 'Create'
 
       expect(current_path).to eq question_path(question)
 
@@ -22,8 +22,8 @@ feature 'User can create answer' do
       end
     end
 
-    scenario 'create an answer with errors', js: true do
-      click_on 'Save answer'
+    scenario 'create an answer with errors' do
+      click_on 'Create'
 
       expect(page).to have_content "Body can't be blank"
     end
@@ -31,8 +31,8 @@ feature 'User can create answer' do
 
   scenario 'Unauthenticated user tries to answer' do
     visit question_path(question)
-    fill_in 'body', with: 'TestAnswer'
-    click_on 'Save answer'
+    fill_in 'Your answer', with: 'TestAnswer'
+    click_on 'Create'
 
     expect(page).to have_content 'You need to sign in or sign up before continuing.'
   end
