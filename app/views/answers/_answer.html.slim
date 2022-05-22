@@ -1,14 +1,15 @@
-p= answer.body
-p= answer.user.email
+div.answer id="answer-#{answer.id}"
 
-td
-  -if current_user&.author_of?(answer)
-    p= link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
-    = form_with model: answer, class: 'hidden', local: false, html: { id: "edit-answer-#{answer.id }"} do |f|
-      = f.label :body, 'Your answer'
-      = f.text_area :body
-      = f.submit 'Save answer'
-    td
-      p= link_to 'Delete', answer_path(answer), method: :delete, data: {confirm: "Вы уверены?"}
+  p= answer.body
+  p= answer.user.email
 
-br
+  td
+    -if current_user&.author_of?(answer)
+      p= link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
+      = form_with model: answer, class: 'hidden', local: false, html: { id: "edit-answer-#{answer.id }"} do |f|
+        = f.label :body, 'Your answer'
+        = f.text_area :body
+        = f.submit 'Save answer'
+      td
+        p= link_to 'Delete', answer, method: :delete, remote: true, html: { id: "delete-answer-#{answer.id }"}
+  br
