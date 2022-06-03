@@ -5,7 +5,7 @@ feature 'User can delete answer' do
   given(:user) { create(:user) }
   given!(:answer) { create(:answer) }
 
-  scenario 'User can delete their answer' do
+  scenario 'User can delete their answer', js: true do
     sign_in(answer.user)
     visit questions_path
     page.find('.questions', text: 'QuestionBodyTest').click_link('Show')

@@ -72,15 +72,15 @@ RSpec.describe AnswersController, type: :controller do
     before { login(answer.user) }
 
     context 'with valid attributes' do
+      before { patch :update, params: { id: answer, answer: { body: 'new body' } }, format: :js }
+
       it 'changes answer attributes' do
-        patch :update, params: { id: answer, answer: { body: 'new body' } }, format: :js
         answer.reload
 
         expect(answer.body).to eq 'new body'
       end
 
       it 'renders update view' do
-        patch :update, params: { id: answer, answer: { body: 'new body' } }, format: :js
         expect(response).to render_template :update
       end
     end
@@ -91,7 +91,7 @@ RSpec.describe AnswersController, type: :controller do
       it 'does not change answer' do
         answer.reload
 
-        expect(answer.body).to eq "AnswerBodyTest"
+        expect(answer.body).to eq answer.body
       end
 
       it 'renders update view' do
@@ -107,12 +107,12 @@ RSpec.describe AnswersController, type: :controller do
       before { login(answer.user) }
 
       it 'deletes the answer' do
-        expect { delete :destroy, params: { id: answer.id } }.to change(Answer, :count).by(-1)
+        expect { delete :destroy, params: { id: answer.id }, format: :js }.to change(Answer, :count).by(-1)
       end
 
-      it 'redirects to page question with answers' do
-        delete :destroy, params: { id: answer.id }
-        expect(response).to redirect_to question_path(answer.question)
+      it 'renders destroy view' do
+        delete :destroy, params: { id: answer.id }, format: :js
+        expect(response).to render_template :destroy
       end
     end
 
@@ -121,12 +121,12 @@ RSpec.describe AnswersController, type: :controller do
       before { login(user) }
 
       it 'not deletes the question' do
-        expect { delete :destroy, params: { id: answer.id } }.to_not change(Answer, :count)
+        expect { delete :destroy, params: { id: answer.id }, format: :js }.to_not change(Answer, :count)
       end
 
-      it 'redirects to page question with answers' do
-        delete :destroy, params: { id: answer.id }
-        expect(response).to redirect_to question_path(answer.question)
+      it 'renders destroy view' do
+        delete :destroy, params: { id: answer.id }, format: :js
+        expect(response).to render_template :destroy
       end
     end
   end

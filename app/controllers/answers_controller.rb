@@ -20,6 +20,7 @@ class AnswersController < ApplicationController
   end
 
   def update
+    best_answer
     @answer.update(answer_params)
     @question = @answer.question
   end
@@ -39,6 +40,14 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body, :user_id)
+    params.require(:answer).permit(:body, :user_id, :best)
+  end
+
+  def best_answer
+    best_answer = Answer.find_by(best: true)
+    return unless best_answer
+
+    best_answer.best = false
+    best_answer.save
   end
 end
