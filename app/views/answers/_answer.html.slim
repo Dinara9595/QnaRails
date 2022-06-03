@@ -1,12 +1,19 @@
-tr
+div.answer id="answer-#{answer.id}"
+
+  p= "BEST!" if answer.best == true
+  p= answer.best
+  p= answer.body
+  p= answer.user.email
+
   td
-    = answer.body
-  td
-    = answer.user.email
-  td
-    = link_to 'Show', answer_path(answer)
-  td
-    = link_to 'Edit', edit_answer_path(answer)
-  td
-    - if current_user&.author_of?(answer)
-      = link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: "Вы уверены?"}
+    -if current_user&.author_of?(answer)
+      p= link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
+      = form_with model: answer, class: 'hidden', local: false, html: { id: "edit-answer-#{answer.id }"} do |f|
+        = f.label :body, 'Your answer'
+        = f.text_area :body
+        = f.submit 'Save answer'
+        = f.check_box :best
+        = f.label :best, "Best"
+      td
+        p= link_to 'Delete', answer, method: :delete, remote: true, html: { id: "delete-answer-#{answer.id }"}
+  br

@@ -30,7 +30,4 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  answers:
-    form:
-      submit: "Save answer"
 

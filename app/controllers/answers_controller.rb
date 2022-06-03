@@ -16,26 +16,17 @@ class AnswersController < ApplicationController
   def edit; end
 
   def create
-    @answer = current_user.answers.build(answer_params.merge(question: @question))
-
-    if @answer.save
-      redirect_to question_path(@question)
-    else
-      render 'questions/show'
-    end
+    @answer = current_user.answers.create(answer_params.merge(question: @question))
   end
 
   def update
-    if @answer.update(answer_params)
-      redirect_to @answer
-    else
-      render :edit
-    end
+    best_answer
+    @answer.update(answer_params)
+    @question = @answer.question
   end
 
   def destroy
     @answer.destroy if current_user.author_of?(@answer)
-    redirect_to question_path(@answer.question)
   end
 
   private
@@ -49,6 +40,14 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body, :user_id)
+    params.require(:answer).permit(:body, :user_id, :best)
+  end
+
+  def best_answer
+    best_answer = Answer.find_by(best: true)
+    return unless best_answer
+
+    best_answer.best = false
+    best_answer.save
   end
 end
